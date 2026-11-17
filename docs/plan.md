@@ -17,3 +17,9 @@ Each step is written test first: write the tests, see them fail, implement, run 
 | 10 | CLI: run loop, flags, lock, exit codes, log rotation, late-commit check, `--save-prompts`, `--dry-run` | `git_summary/cli.py`, `git_summary/log.py` | `tests/test_cli.py` (acceptance criteria) |
 | 11 | launchd and cron install/remove | `git_summary/schedule.py` | `tests/test_schedule.py` |
 | 12 | Acceptance sweep against the spec checklist; confirm Sonnet context limit and Claude Code print-mode flags | all | `make test`, `make lint` |
+
+## Backlog
+
+- **Mermaid charts (not started).** An "At a glance" section near the top of the daily page with a bar chart (`xychart-beta`) of commits and lines changed per repo. The chart is built in Python from git data, not by the model, and sits behind a config flag such as `charts = true`. First confirm that Obsidian's bundled Mermaid supports `xychart-beta`. Avoid pie charts, since 12 repos would be unreadable.
+- **Cross-day trends (not started).** Commits per day, risk flags per week, busiest repos. These would come from page frontmatter, on a weekly rollup page or through Dataview.
+- **Model-drawn diagrams (deferred).** Examples are rollout flowcharts. Deferred because diagrams can't carry SHA citations, broken syntax needs `mmdc` (Node) to catch, and they cost output tokens. Revisit only as an opt-in.
