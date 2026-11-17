@@ -42,7 +42,12 @@ class ClaudeCodeBackend:
             except subprocess.TimeoutExpired as e:
                 raise RetryableError(f"claude timed out after {CALL_TIMEOUT}s") from e
         if out.returncode != 0:
-            raise RetryableError(f"claude exited {out.returncode}: {out.stderr.strip()[:500]}")
+            detail = out.stderr.strip()
+            try:
+                detail = str(json.loads(out.stdout).get("result")) or detail
+            except (json.JSONDecodeError, AttributeError):
+                detail = detail or out.stdout.strip()
+            raise RetryableError(f"claude exited {out.returncode}: {detail[:500]}")
         try:
             result = json.loads(out.stdout)
         except json.JSONDecodeError as e:

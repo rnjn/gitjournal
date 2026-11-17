@@ -42,7 +42,7 @@ def test_input_budget():
 
 
 def test_char_estimate():
-    assert char_estimate("abc", "abcdef") == 3
+    assert char_estimate("abc", "abcdef") == 4
 
 
 def test_fits_in_one_call():
@@ -75,3 +75,9 @@ def test_reduces_largest_patches_first_until_repo_fits():
 def test_fails_when_nothing_left_to_reduce():
     with pytest.raises(BudgetError, match="code"):
         plan_calls(D, repos(), [], "sys", chars, 300)
+
+
+def test_char_estimate_is_conservative_for_dense_code():
+    measured_chars_per_token = 2.2
+    chars = 2_200_000
+    assert char_estimate("", "x" * chars) >= chars / measured_chars_per_token

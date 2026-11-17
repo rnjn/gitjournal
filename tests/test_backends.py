@@ -219,10 +219,16 @@ def test_claude_code_missing_binary_is_permanent():
 
 def test_claude_code_counts_by_characters():
     backend = ClaudeCodeBackend("m", runner=FakeRunner())
-    assert backend.count_tokens("abc", "abcdef") == 3
+    assert backend.count_tokens("abc", "abcdef") == 4
 
 
 def test_make_backend_selects_by_name():
     model = ModelConfig(backend="claude_code", name="claude-sonnet-5-5")
     assert isinstance(make_backend(model, None), ClaudeCodeBackend)
     assert isinstance(make_backend(model, "api", client=stub_client()[0]), ApiBackend)
+
+
+def test_claude_code_nonzero_exit_reports_json_result():
+    out = json.dumps({"is_error": True, "result": "Prompt is too long"})
+    with pytest.raises(RetryableError, match="Prompt is too long"):
+        ClaudeCodeBackend("m", runner=FakeRunner(out, returncode=1)).summarise("s", "u")
