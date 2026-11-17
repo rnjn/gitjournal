@@ -111,7 +111,7 @@ def test_render_page_ok():
         "---\n\n"
         "# Git summary: Sunday 15 November 2026\n"
     )
-    assert page.index("## Narrative") < page.index("## Worth a look") < page.index("## People")
+    assert page.index("## Details") < page.index("## Worth a look") < page.index("## People")
     assert page.rstrip().endswith("Not mentioned above: x")
     assert "[!warning]" not in page
 
@@ -125,12 +125,12 @@ def test_render_page_partial_callout_and_reduced_note():
         not_mentioned=None,
     )
     assert "repos_missing: [infra]" in page
-    callout = page[page.index("> [!warning]") : page.index("## Narrative")]
+    callout = page[page.index("> [!warning]") : page.index("## Details")]
     assert "infra" in callout
     assert "git fetch timed out after 120s" in callout
     assert "git-summary run --date 2026-11-15 --force" in callout
     assert "src/big.py (a1b2c3d)" in page
-    assert page.index("[!warning]") < page.index("## Narrative")
+    assert page.index("[!warning]") < page.index("## Details")
 
 
 def test_render_empty_page():
@@ -138,7 +138,7 @@ def test_render_empty_page():
     assert "status: empty" in page
     assert "authors: []" in page
     assert page.rstrip().endswith("No commits on main in any repository.")
-    assert "## Narrative" not in page
+    assert "## Details" not in page
 
 
 def test_write_atomic_and_read_commit_count(tmp_path):

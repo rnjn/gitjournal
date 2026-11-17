@@ -116,7 +116,7 @@ def render_page(
     page = _head(m, missing)
     if reduced:
         page += _reduced_note(reduced)
-    page += f"## Narrative\n\n{parsed.narrative}\n\n"
+    page += f"## Details\n\n{parsed.narrative}\n\n"
     page += f"## Worth a look\n\n{parsed.worth_a_look}\n\n"
     page += f"## People\n\n{parsed.people}\n"
     if not_mentioned:

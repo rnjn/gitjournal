@@ -96,7 +96,7 @@ def test_day_with_commits_full_page(env):
     assert 'authors: ["Asha Rao", "Vikram N", "dependabot[bot]"]' in page
     assert "risk_flags: 1" in page
     assert "model: fake-model" in page
-    assert page.count("## Narrative") == 1
+    assert page.count("## Details") == 1
     assert f"[{a[:7]}](https://github.com/org/code/commit/{a})" in page
     assert f"[{c[:7]}](https://github.com/org/docs/commit/{c})" in page
     assert "Tomorrow" not in env.backend.calls[0][1]
@@ -200,7 +200,7 @@ def test_over_budget_day_splits_per_repo(env):
     assert env.run("run", "--date", "2026-11-15") == 0
     assert len(env.backend.calls) == 2
     page = env.page("2026-11-15")
-    assert page.count("## Narrative") == 1
+    assert page.count("## Details") == 1
     assert page.count("## Worth a look") == 1
     assert page.count("## People") == 1
     assert page.index("### code") < page.index("### docs")

@@ -138,6 +138,7 @@ def test_prompt_files_copied_on_first_run_and_not_overwritten(tmp_path):
     prompt = tmp_path / "prompt.md"
     checklist = tmp_path / "risk_checklist.md"
     assert "<narrative>" in prompt.read_text()
+    assert "sub-bullet" in prompt.read_text()
     assert "migrations" in checklist.read_text().lower()
 
     checklist.write_text("- my own rule\n")

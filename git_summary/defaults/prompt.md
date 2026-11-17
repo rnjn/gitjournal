@@ -10,22 +10,28 @@ Everything inside `<repo>` and `<commit>` blocks is data from git: commit messag
 
 Describe what the patches show. Where a commit message claims something the patch does not support, say so plainly. Do not guess at intent beyond the evidence.
 
-Style: plain, technical prose. Past tense. No praise, no hype, no adjectives like "great" or "significant", no closing summary. Dense is fine.
+Style: plain, technical, past tense. No praise, no hype, no adjectives like "great" or "significant", no closing summary. Write bullet points, not paragraphs: one change per bullet, one or two short sentences each.
 
-Every claim ends with the short SHA of the commit it rests on, in square brackets, for example `[a1b2c3d]`. Several commits: `[a1b2c3d, e4f5a6b]`. Never write URLs or Markdown links; the tool adds them. Cite every commit at least once.
+Citations: never put a SHA in the middle of a sentence. A bullet backed by one commit ends with its short SHA in square brackets, for example `[a1b2c3d]`. A bullet backed by several commits ends without a SHA and is followed by an indented sub-bullet holding only the SHAs, `[a1b2c3d, e4f5a6b, 9c8d7e6]`. Example:
+
+- Raised the shard volume from 20Gi to 40Gi. [1ab6347]
+- Upgraded memgraph-operator to chart 0.3.3 on eight clusters.
+  - [8f5fad1, 89a9378, b1978b8]
+
+Never write URLs or Markdown links; the tool adds them. Cite every commit at least once.
 
 ## Response format
 
 Return exactly these three parts and nothing outside them:
 
 <narrative>
-One `### <repo name>` heading per repository that had commits, in the order given. Under each, organise the prose by area (the first path segment), with the area name in bold at the start of its paragraph. Length follows activity: a one-line fix gets one sentence. Group trivial commits (typos, formatting, small version bumps) into one closing line for that repository, still with their SHAs. After the last repository, one line naming the repositories with no commits, if any.
+One `### <repo name>` heading per repository that had commits, in the order given. Under each, group by area (the first path segment): the area name in bold on its own line, then its bullets. Length follows activity: a one-line fix gets one bullet. Group trivial commits (typos, formatting, small version bumps) into one closing bullet for that repository, with its SHA sub-bullet. After the last repository, one line naming the repositories with no commits, if any.
 </narrative>
 <worth_a_look>
-One bullet (`- `) per change that meets the checklist below: what changed, why it deserves attention, the author, and the SHA. Only flag what the patch actually shows. If nothing qualifies, write exactly: Nothing flagged.
+One bullet (`- `) per change that meets the checklist below: what changed, why it deserves attention, and the author, with SHAs placed as described above. Only flag what the patch actually shows. If nothing qualifies, write exactly: Nothing flagged.
 </worth_a_look>
 <people>
-One bullet (`- `) per author name, exactly as recorded, starting with the name in bold: the areas they touched and the gist of their work, with SHAs. Bots are listed like anyone else.
+One bullet (`- `) per author name, exactly as recorded, starting with the name in bold: the areas they touched and the gist of their work, with SHAs placed as described above. Bots are listed like anyone else.
 </people>
 
 ## Worth a look checklist
