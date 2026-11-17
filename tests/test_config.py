@@ -26,6 +26,7 @@ def test_minimal_config_gets_defaults(tmp_path):
     assert cfg.output_folder == "Git Summary"
     assert cfg.output_dir == tmp_path / "vault" / "Git Summary"
     assert cfg.first_run_backfill_days == 30
+    assert cfg.vault_git_push is False
     assert cfg.model.backend == "api"
     assert cfg.model.name == "claude-sonnet-5-5"
     assert cfg.model.max_input_tokens == 0
@@ -148,3 +149,13 @@ def test_prompt_files_copied_on_first_run_and_not_overwritten(tmp_path):
     system = load_system_prompt(tmp_path)
     assert system.startswith(prompt.read_text().rstrip())
     assert system.rstrip().endswith("- my own rule")
+
+
+def test_vault_git_push(tmp_path):
+    cfg = load_config(write(tmp_path, "vault_git_push = true\n" + MINIMAL))
+    assert cfg.vault_git_push is True
+
+
+def test_vault_git_push_must_be_bool(tmp_path):
+    with pytest.raises(ConfigError, match="vault_git_push"):
+        load_config(write(tmp_path, 'vault_git_push = "yes"\n' + MINIMAL))

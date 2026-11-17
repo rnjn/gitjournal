@@ -51,6 +51,7 @@ output_folder = "Git Summary"
 cache_dir = "~/.cache/git-summary/repos"
 log_file = "~/.local/state/git-summary/git-summary.log"
 first_run_backfill_days = 30
+vault_git_push = false     # commit and push the output folder after each run
 
 [model]
 backend = "api"            # "api" or "claude_code"
@@ -216,9 +217,11 @@ The tool installs as a single command, `git-summary`, and the scheduled job runs
 
 The launchd plist and crontab entry set `PATH` to the directories holding `git` and, for the `claude_code` backend, `claude`, resolved at install time, since scheduled jobs do not inherit the shell's `PATH`.
 
+**Vault push.** With `vault_git_push = true` and the vault a git repository with an upstream, every run that is not `--dry-run` stages changes under the output folder only, commits them as `git-summary: <first day>..<last day>` (or one date), and runs `git push`. Other changes in the vault are left alone. It pushes even when nothing new was written, so an earlier failed push is retried. Merge conflicts are out of scope: the tool assumes it is the only writer. A push failure is logged, the pages stay written and committed locally, and the exit code is `1`.
+
 **Concurrency.** A lock file prevents a manual run and a scheduled run from overlapping. The second one exits immediately with a logged message and exit code `0`, so the scheduler does not record a failure.
 
-**Exit codes.** `0` when every targeted day was written in full (or the run was skipped because another holds the lock), `1` when any day failed or was written partial, `2` for config or usage errors.
+**Exit codes.** `0` when every targeted day was written in full (or the run was skipped because another holds the lock), `1` when any day failed or was written partial, or the vault push failed, `2` for config or usage errors.
 
 ## Failures and logging
 

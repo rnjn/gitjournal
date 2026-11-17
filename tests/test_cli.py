@@ -6,7 +6,7 @@ import pytest
 
 from git_summary import cli
 from tests.fakes import FakeBackend
-from tests.gitutil import Repo, git
+from tests.gitutil import Repo, git, vault_with_remote
 
 IST = ZoneInfo("Asia/Kolkata")
 NOW = datetime(2026, 11, 16, 8, 0, tzinfo=IST)
@@ -273,3 +273,40 @@ def test_path_repo_left_untouched(env):
     assert "commits: 1" in env.page("2026-11-15")
     assert git(local, "rev-parse", "--abbrev-ref", "HEAD") == "wip"
     assert (local / "scratch.txt").read_text() == "dirty"
+
+
+def pushed_vault(env):
+    remote = env.tmp / "vault-remote.git"
+    vault_with_remote(env.vault, remote)
+    env.extra = "vault_git_push = true"
+    return remote
+
+
+def test_run_commits_and_pushes_vault(env):
+    remote = pushed_vault(env)
+    assert env.run("run", "--date", "2026-11-15") == 0
+    assert git(remote, "log", "-1", "--format=%s", "main") == "git-summary: 2026-11-15"
+    files = git(remote, "ls-tree", "-r", "--name-only", "main").splitlines()
+    assert "Git Summary/2026-11-15.md" in files
+    assert "pushed vault: git-summary: 2026-11-15" in env.log_text()
+
+
+def test_dry_run_does_not_push(env):
+    remote = pushed_vault(env)
+    assert env.run("run", "--dry-run", "--date", "2026-11-15") == 0
+    assert git(remote, "log", "--format=%s", "main") == "init"
+
+
+def test_push_failure_exits_one_and_keeps_page(env):
+    pushed_vault(env)
+    git(env.vault, "remote", "set-url", "origin", str(env.tmp / "missing.git"))
+    assert env.run("run", "--date", "2026-11-15") == 1
+    assert (env.out / "2026-11-15.md").exists()
+    assert "vault push failed" in env.log_text()
+
+
+def test_push_disabled_by_default(env):
+    remote = env.tmp / "vault-remote.git"
+    vault_with_remote(env.vault, remote)
+    assert env.run("run", "--date", "2026-11-15") == 0
+    assert git(remote, "log", "--format=%s", "main") == "init"

@@ -10,6 +10,7 @@ from git_summary.config import DEFAULT_CONFIG_PATH, ConfigError, ensure_prompt_f
 from git_summary.days import target_days
 from git_summary.log import setup_logging
 from git_summary.pipeline import Pipeline
+from git_summary.vault import VaultError, publish
 
 EXIT_OK, EXIT_FAILED, EXIT_USAGE = 0, 1, 2
 COMPLETE = {"ok", "empty", "dry-run"}
@@ -130,6 +131,13 @@ def _run_locked(args, cfg, now, backend_factory, log, date_from, date_to) -> int
             print(line)
 
     code = EXIT_OK if all(o in COMPLETE for o in outcomes) else EXIT_FAILED
+    if cfg.vault_git_push and not args.dry_run:
+        try:
+            message = publish(cfg.vault_path, cfg.output_folder)
+            log.info("pushed vault: %s", message or "no new pages")
+        except VaultError as e:
+            log.error("vault push failed: %s", e)
+            code = EXIT_FAILED
     log.info("run end: exit=%d", code)
     return code
 

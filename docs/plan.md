@@ -1,6 +1,6 @@
 # Build plan
 
-Each step is written test first: write the tests, see them fail, implement, run `make test` and `make lint`, then commit. Status: steps 0–12 done.
+Each step is written test first: write the tests, see them fail, implement, run `make test` and `make lint`, then commit. Status: steps 0–13 done.
 
 | # | Step | Files | Tests to run |
 | --- | --- | --- | --- |
@@ -17,6 +17,7 @@ Each step is written test first: write the tests, see them fail, implement, run 
 | 10 | CLI: run loop, flags, lock, exit codes, log rotation, late-commit check, `--save-prompts`, `--dry-run` | `git_summary/cli.py`, `git_summary/log.py` | `tests/test_cli.py` (acceptance criteria) |
 | 11 | launchd and cron install/remove | `git_summary/schedule.py` | `tests/test_schedule.py` |
 | 12 | Acceptance sweep against the spec checklist; confirm Sonnet context limit and Claude Code print-mode flags | all | `make test`, `make lint` |
+| 13 | Vault push: `vault_git_push` config flag; after a non-dry run, commit changed files under the output folder only and `git push`; push failure logs and exits 1, pages kept | `git_summary/config.py`, `git_summary/vault.py`, `git_summary/cli.py`, README, spec | `tests/test_config.py`, `tests/test_vault.py`, `tests/test_cli.py` |
 
 ## Backlog
 

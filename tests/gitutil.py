@@ -54,3 +54,16 @@ class Repo:
     def clone_to(self, dest: Path) -> Path:
         git(dest.parent, "clone", "-q", str(self.path), dest.name)
         return dest
+
+
+def vault_with_remote(vault: Path, remote: Path) -> None:
+    git(remote.parent, "init", "-q", "--bare", "-b", "main", remote.name)
+    vault.mkdir(parents=True, exist_ok=True)
+    git(vault, "init", "-q", "-b", "main")
+    git(vault, "config", "user.name", "Vault Owner")
+    git(vault, "config", "user.email", "v@example.com")
+    git(vault, "remote", "add", "origin", str(remote))
+    (vault / "README.md").write_text("vault\n")
+    git(vault, "add", "README.md")
+    git(vault, "commit", "-q", "-m", "init")
+    git(vault, "push", "-q", "-u", "origin", "main")

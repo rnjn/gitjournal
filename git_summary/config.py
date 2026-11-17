@@ -60,6 +60,7 @@ class Config:
     cache_dir: Path = Path("~/.cache/git-summary/repos").expanduser()
     log_file: Path = Path("~/.local/state/git-summary/git-summary.log").expanduser()
     first_run_backfill_days: int = 30
+    vault_git_push: bool = False
     model: ModelConfig = field(default_factory=ModelConfig)
     omit_patch: list[str] = field(default_factory=lambda: list(DEFAULT_OMIT_PATCH))
 
@@ -134,6 +135,10 @@ def load_config(path: Path) -> Config:
         kwargs["output_folder"] = raw["output_folder"]
     if "first_run_backfill_days" in raw:
         kwargs["first_run_backfill_days"] = int(raw["first_run_backfill_days"])
+    if "vault_git_push" in raw:
+        if not isinstance(raw["vault_git_push"], bool):
+            raise ConfigError("vault_git_push must be true or false")
+        kwargs["vault_git_push"] = raw["vault_git_push"]
     if "omit_patch" in raw.get("filters", {}):
         kwargs["omit_patch"] = list(raw["filters"]["omit_patch"])
 
