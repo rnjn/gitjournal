@@ -169,8 +169,8 @@ tags: [git-summary]
 **Body layout**, in this order:
 
 1. `# Git summary: Sunday 15 November 2026`
-2. `## Details`, with a `###` heading per repo that had commits. Within a repo the content is grouped by area, as bullet points: one change per bullet. A bullet backed by one commit ends with its SHA; a bullet backed by several commits is followed by an indented sub-bullet listing only the SHAs. Length is proportional to activity. Trivial commits (typos, formatting, small version bumps) are grouped into one closing line per repo, still with their SHAs. Repos with no commits are named in one line at the end.
-3. `## Worth a look`, one bullet per flagged change: what changed, why it deserves attention, the author, the SHA. If nothing qualifies, the single line "Nothing flagged." `risk_flags` is the number of bullets.
+2. `## Worth a look`, one bullet per flagged change: what changed, why it deserves attention, the author, the SHA. If nothing qualifies, the single line "Nothing flagged." `risk_flags` is the number of bullets.
+3. `## Details`, with a `###` heading per repo that had commits. Within a repo the content is grouped by area, as bullet points: one change per bullet. A bullet backed by one commit ends with its SHA; a bullet backed by several commits is followed by an indented sub-bullet listing only the SHAs. Length is proportional to activity. Trivial commits (typos, formatting, small version bumps) are grouped into one closing line per repo, still with their SHAs. Repos with no commits are named in one line at the end.
 4. `## People`, one short entry per author name: the areas they touched and the gist of their work, with SHAs.
 
 **Style rules** (in `prompt.md`): plain, technical prose for a reader who knows the codebase. Past tense. No praise, no hype, no closing summary line. Describe what the patch shows; where the message claims something the patch does not support, say so. Do not guess at intent beyond the evidence.
