@@ -1,6 +1,6 @@
 # Build plan
 
-Each step is written test first: write the tests, see them fail, implement, run `make test` and `make lint`, then commit.
+Each step is written test first: write the tests, see them fail, implement, run `make test` and `make lint`, then commit. Status: steps 0–12 done.
 
 | # | Step | Files | Tests to run |
 | --- | --- | --- | --- |
