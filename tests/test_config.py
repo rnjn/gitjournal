@@ -129,3 +129,21 @@ def test_missing_file(tmp_path):
 def test_invalid_toml(tmp_path):
     with pytest.raises(ConfigError, match="TOML"):
         load_config(write(tmp_path, "vault_path = "))
+
+
+def test_prompt_files_copied_on_first_run_and_not_overwritten(tmp_path):
+    from git_summary.config import ensure_prompt_files, load_system_prompt
+
+    ensure_prompt_files(tmp_path)
+    prompt = tmp_path / "prompt.md"
+    checklist = tmp_path / "risk_checklist.md"
+    assert "<narrative>" in prompt.read_text()
+    assert "migrations" in checklist.read_text().lower()
+
+    checklist.write_text("- my own rule\n")
+    ensure_prompt_files(tmp_path)
+    assert checklist.read_text() == "- my own rule\n"
+
+    system = load_system_prompt(tmp_path)
+    assert system.startswith(prompt.read_text().rstrip())
+    assert system.rstrip().endswith("- my own rule")

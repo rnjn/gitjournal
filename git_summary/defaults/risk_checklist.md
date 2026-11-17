@@ -1,0 +1,8 @@
+- Database or schema migrations, and changes to retention or TTL settings.
+- Changed defaults in config, feature flags or environment variables.
+- Tests deleted, skipped or disabled; CI checks loosened.
+- Infra changes affecting production: resources destroyed or replaced, scaling limits, networking, IAM and secrets.
+- Dependency major-version bumps and new dependencies.
+- Changes to public surfaces: API contracts, SDK interfaces, ingest formats.
+- Reverts, and commits whose patch does not match their message.
+- Unusually large commits, or one commit touching many areas.

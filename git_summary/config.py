@@ -1,10 +1,12 @@
 import tomllib
 from dataclasses import dataclass, field
+from importlib.resources import files
 from pathlib import Path
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 DEFAULT_CONFIG_PATH = Path("~/.config/git-summary/config.toml").expanduser()
 BACKENDS = ("api", "claude_code")
+PROMPT_FILES = ("prompt.md", "risk_checklist.md")
 
 DEFAULT_OMIT_PATCH = [
     "**/package-lock.json",
@@ -143,3 +145,17 @@ def load_config(path: Path) -> Config:
         model=model,
         **kwargs,
     )
+
+
+def ensure_prompt_files(config_dir: Path) -> None:
+    config_dir.mkdir(parents=True, exist_ok=True)
+    defaults = files("git_summary") / "defaults"
+    for name in PROMPT_FILES:
+        target = config_dir / name
+        if not target.exists():
+            target.write_text((defaults / name).read_text(encoding="utf-8"), encoding="utf-8")
+
+
+def load_system_prompt(config_dir: Path) -> str:
+    parts = [(config_dir / name).read_text(encoding="utf-8").strip() for name in PROMPT_FILES]
+    return "\n\n".join(parts) + "\n"
