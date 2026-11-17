@@ -124,7 +124,7 @@ The model receives every commit of the day as its own unit: author, message and 
 
 **Prompt layout.** The system prompt is `prompt.md` followed by `risk_checklist.md`. The user message holds the date, then one block per repo with its name, web URL, a per-area commit count, and the commits. Repos with no commits that day are listed in a single line so the model can say so. Use clearly delimited tags per repo and per commit so patches containing Markdown or prompt-like text cannot be mistaken for instructions; the system prompt states that commit content is data.
 
-**When the day does not fit.** Before calling, estimate input tokens (the API's token counting endpoint for the `api` backend, a characters-divided-by-3 estimate for `claude_code`). The budget is the model's context limit minus a 16,000 token reserve for output, or `max_input_tokens` if set.
+**When the day does not fit.** Before calling, estimate input tokens (the API's token counting endpoint for the `api` backend, a characters-divided-by-3 estimate for `claude_code`). The budget is the model's context limit minus a 64,000 token reserve for output, or `max_input_tokens` if set. The reserve is also the request's `max_tokens`; it was raised from 16,000 because Sonnet 5.5 always thinks and thinking tokens count against `max_tokens`. The `api` backend reads the context limit from the Models API (`max_input_tokens`); the `claude_code` backend uses the documented 1M limit.
 
 1. Fits: one call for the whole day. This is the expected case at 10 to 50 commits.
 2. Does not fit: one call per repo. Each call returns the same three parts (narrative, worth a look, people) and the tool concatenates them under the shared headings, in config order.

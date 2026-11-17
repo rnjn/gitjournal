@@ -4,7 +4,7 @@ from datetime import date
 
 from git_summary.assemble import RepoDay, build_user_message
 
-OUTPUT_RESERVE = 16_000
+OUTPUT_RESERVE = 64_000
 CHARS_PER_TOKEN = 3
 
 TokenCounter = Callable[[str, str], int]
