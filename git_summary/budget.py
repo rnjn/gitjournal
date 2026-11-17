@@ -18,6 +18,7 @@ class BudgetError(Exception):
 class Call:
     user: str
     reduced: list[str] = field(default_factory=list)
+    tokens: int = 0
 
 
 def input_budget(context_limit: int, max_input_tokens: int) -> int:
@@ -48,7 +49,7 @@ def _reduce_repo(
         user = build_user_message(d, [repo, *quiet], omit, reduced)
         tokens = count(system, user)
         if tokens <= budget:
-            return Call(user, labels)
+            return Call(user, labels, tokens)
         if not candidates:
             raise BudgetError(f"repo {repo.name} does not fit in {budget} tokens after reduction")
         overflow_chars = (tokens - budget) * CHARS_PER_TOKEN
@@ -69,8 +70,9 @@ def plan_calls(
     budget: int,
 ) -> list[Call]:
     whole = build_user_message(d, repos, omit)
-    if count(system, whole) <= budget:
-        return [Call(whole)]
+    tokens = count(system, whole)
+    if tokens <= budget:
+        return [Call(whole, tokens=tokens)]
 
     active = [r for r in repos if r.commits]
     quiet = [r for r in repos if not r.commits]

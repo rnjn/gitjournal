@@ -31,16 +31,17 @@ class Backend(Protocol):
 def with_retries(
     fn: Callable[[], T],
     attempts: int = ATTEMPTS,
-    base_delay: float = BASE_DELAY,
+    base_delay: float | None = None,
     sleep: Callable[[float], None] = time.sleep,
 ) -> T:
+    delay = BASE_DELAY if base_delay is None else base_delay
     for attempt in range(attempts):
         try:
             return fn()
         except (RetryableError, ResponseError):
             if attempt == attempts - 1:
                 raise
-            sleep(base_delay * 2**attempt)
+            sleep(delay * 2**attempt)
     raise AssertionError("unreachable")
 
 
