@@ -217,7 +217,7 @@ The tool installs as a single command, `git-summary`, and the scheduled job runs
 
 The launchd plist and crontab entry set `PATH` to the directories holding `git` and, for the `claude_code` backend, `claude`, resolved at install time, since scheduled jobs do not inherit the shell's `PATH`.
 
-**Vault push.** With `vault_git_push = true` and the vault a git repository with an upstream, every run that is not `--dry-run` stages changes under the output folder only, commits them as `git-summary: <first day>..<last day>` (or one date), and runs `git push`. Other changes in the vault are left alone. It pushes even when nothing new was written, so an earlier failed push is retried. Merge conflicts are out of scope: the tool assumes it is the only writer. A push failure is logged, the pages stay written and committed locally, and the exit code is `1`.
+**Vault push.** With `vault_git_push = true` and the vault a git repository with an upstream, every run that is not `--dry-run` stages changes under the output folder only, commits them as `git-summary: <first day>..<last day>` (or one date), then runs `git pull --rebase --autostash` and `git push`. Other changes in the vault are left alone, and commits pushed by others (such as README edits) are rebased onto. It pushes even when nothing new was written, so an earlier failed push is retried. If the rebase conflicts it is aborted and reported; the tool assumes it is the only writer to the output folder. A push failure is logged, the pages stay written and committed locally, and the exit code is `1`.
 
 **Concurrency.** A lock file prevents a manual run and a scheduled run from overlapping. The second one exits immediately with a logged message and exit code `0`, so the scheduler does not record a failure.
 

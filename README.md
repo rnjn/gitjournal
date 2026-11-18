@@ -30,7 +30,7 @@ name = "infra"
 path = "/Users/me/src/infra"
 ```
 
-To keep the vault in GitHub, make it a git repository with an upstream and set `vault_git_push = true`. After each run the tool commits the changes in the output folder, and only those, then runs `git push`. A failed push leaves the pages committed locally and is retried on the next run.
+To keep the vault in GitHub, make it a git repository with an upstream and set `vault_git_push = true`. After each run the tool commits the changes in the output folder, and only those, then runs `git pull --rebase` and `git push`. A failed push leaves the pages committed locally and is retried on the next run.
 
 `prompt.md` and `risk_checklist.md` are copied beside the config on first run; edit them freely.
 

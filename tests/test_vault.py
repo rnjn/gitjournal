@@ -61,7 +61,7 @@ def test_only_output_folder_is_committed(tmp_path, vault):
     files = git(tmp_path / "remote.git", "ls-tree", "-r", "--name-only", "main").splitlines()
     assert "notes.md" not in files
     assert git(tmp_path / "remote.git", "show", "main:README.md") == "vault"
-    assert "M  README.md" in git(vault, "status", "--porcelain")
+    assert (vault / "README.md").read_text() == "edited\n"
 
 
 def test_not_a_repository(tmp_path):
@@ -77,3 +77,38 @@ def test_push_failure_keeps_local_commit(tmp_path, vault):
     with pytest.raises(VaultError, match="push"):
         publish(vault, FOLDER)
     assert git(vault, "log", "-1", "--format=%s") == "git-summary: 2026-11-16"
+
+
+def other_clone(tmp_path):
+    other = tmp_path / "other"
+    git(tmp_path, "clone", "-q", str(tmp_path / "remote.git"), other.name)
+    git(other, "config", "user.name", "Someone Else")
+    git(other, "config", "user.email", "s@example.com")
+    return other
+
+
+def test_rebases_onto_remote_changes_before_push(tmp_path, vault):
+    other = other_clone(tmp_path)
+    (other / "README.md").write_text("edited on github\n")
+    git(other, "commit", "-qam", "updated covered repos")
+    git(other, "push", "-q")
+    (vault / "notes.md").write_text("uncommitted\n")
+    write_page(vault, "2026-11-17")
+    assert publish(vault, FOLDER) == "git-summary: 2026-11-17"
+    assert remote_log(tmp_path) == ["git-summary: 2026-11-17", "updated covered repos", "init"]
+    assert (vault / "notes.md").read_text() == "uncommitted\n"
+
+
+def test_rebase_conflict_aborts_and_keeps_local_commit(tmp_path, vault):
+    other = other_clone(tmp_path)
+    (other / FOLDER).mkdir()
+    (other / FOLDER / "2026-11-17.md").write_text("theirs\n")
+    git(other, "add", "-A")
+    git(other, "commit", "-qm", "theirs")
+    git(other, "push", "-q")
+    write_page(vault, "2026-11-17", "ours\n")
+    with pytest.raises(VaultError, match="pull --rebase"):
+        publish(vault, FOLDER)
+    assert git(vault, "log", "-1", "--format=%s") == "git-summary: 2026-11-17"
+    assert not (vault / ".git" / "rebase-merge").exists()
+    assert not (vault / ".git" / "rebase-apply").exists()
