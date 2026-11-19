@@ -4,7 +4,7 @@ from datetime import date
 from fnmatch import fnmatchcase
 from html import escape
 
-from git_summary.repos import Commit, FileChange
+from gitjournal.repos import Commit, FileChange
 
 
 @dataclass

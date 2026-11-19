@@ -3,15 +3,15 @@ from zoneinfo import ZoneInfo
 
 import pytest
 
-from git_summary.assemble import CommitData, RepoDay
-from git_summary.budget import (
+from gitjournal.assemble import CommitData, RepoDay
+from gitjournal.budget import (
     OUTPUT_RESERVE,
     BudgetError,
     char_estimate,
     input_budget,
     plan_calls,
 )
-from git_summary.repos import Commit, FileChange
+from gitjournal.repos import Commit, FileChange
 
 IST = ZoneInfo("Asia/Kolkata")
 D = date(2026, 11, 15)

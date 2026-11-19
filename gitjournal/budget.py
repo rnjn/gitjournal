@@ -2,7 +2,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import date
 
-from git_summary.assemble import RepoDay, build_user_message
+from gitjournal.assemble import RepoDay, build_user_message
 
 OUTPUT_RESERVE = 64_000
 CHARS_PER_TOKEN = 2

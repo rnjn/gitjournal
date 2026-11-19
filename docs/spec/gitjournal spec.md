@@ -1,4 +1,4 @@
-# Daily Git Summary: build spec
+# Daily Git Journal: build spec
 
 Nov 16, 2026 · @rnjn
 
@@ -20,7 +20,7 @@ A run does the following for every day that needs a page:
 2. Select the commits on the default branch whose committer date falls in that day (IST).
 3. Build one prompt containing every commit's author, message and patch.
 4. Call Sonnet once and receive the page body.
-5. Validate the citations, add frontmatter, and write `Git Summary/YYYY-MM-DD.md`.
+5. Validate the citations, add frontmatter, and write `Git Journal/YYYY-MM-DD.md`.
 
 ## Scope
 
@@ -42,14 +42,14 @@ Out of scope for v1:
 
 ## Configuration
 
-All behaviour is driven by one TOML file, default `~/.config/git-summary/config.toml`, overridable with `--config`. Nothing is hard-coded to the laptop, so the same code can later run in a GitHub Action with a different config.
+All behaviour is driven by one TOML file, default `~/.config/gitjournal/config.toml`, overridable with `--config`. Nothing is hard-coded to the laptop, so the same code can later run in a GitHub Action with a different config.
 
 ```toml
 timezone = "Asia/Kolkata"
 vault_path = "/path/to/vault"
-output_folder = "Git Summary"
-cache_dir = "~/.cache/git-summary/repos"
-log_file = "~/.local/state/git-summary/git-summary.log"
+output_folder = "Git Journal"
+cache_dir = "~/.cache/gitjournal/repos"
+log_file = "~/.local/state/gitjournal/gitjournal.log"
 first_run_backfill_days = 30
 vault_git_push = false     # commit and push the output folder after each run
 
@@ -83,7 +83,7 @@ Rules:
 - For `url` repos the tool creates and maintains a bare clone under `cache_dir`. A plain `git clone --bare` has no `origin/*` refs and no fetch refspec, so after cloning the tool sets `remote.origin.fetch` to `+refs/heads/*:refs/remotes/origin/*` and fetches, so both kinds of repo read `origin/<branch>` the same way. For `path` repos it runs `git fetch` in place and reads `origin/<default branch>` only. It never checks out, resets or modifies a working tree.
 - The default branch is detected per repo from `origin/HEAD`, falling back to `main`, then `master`. An optional `branch` key overrides detection.
 - The GitHub web URL for commit links is derived from the `origin` remote (SSH and HTTPS forms). An optional `web_url` key overrides it.
-- The API key is read from the `ANTHROPIC_API_KEY` environment variable and never from the config file. Because launchd and cron do not load the shell environment, on macOS the tool falls back to the login Keychain (`security find-generic-password -s git-summary -a anthropic -w`) when the variable is unset. The key is only required for the `api` backend.
+- The API key is read from the `ANTHROPIC_API_KEY` environment variable and never from the config file. Because launchd and cron do not load the shell environment, on macOS the tool falls back to the login Keychain (`security find-generic-password -s gitjournal -a anthropic -w`) when the variable is unset. The key is only required for the `api` backend.
 - Two prompt files live beside the config and are user-editable: `prompt.md` (instructions and page layout) and `risk_checklist.md` (the "Worth a look" criteria). The tool ships defaults and copies them on first run if absent.
 
 ## Days and commit selection
@@ -146,7 +146,7 @@ The model is Claude Sonnet, called through one of two backends selected by `mode
 
 ## The daily page
 
-Each day is written to `<vault_path>/Git Summary/YYYY-MM-DD.md`, in one flat folder, using a temp file and rename so a crash never leaves a half-written page.
+Each day is written to `<vault_path>/Git Journal/YYYY-MM-DD.md`, in one flat folder, using a temp file and rename so a crash never leaves a half-written page.
 
 **Frontmatter**
 
@@ -161,7 +161,7 @@ authors: ["Asha Rao", "dependabot[bot]", "Vikram N"]
 risk_flags: 2
 model: claude-sonnet-5-5
 generated_at: 2026-11-16T08:00:12+05:30
-tags: [git-summary]
+tags: [gitjournal]
 ---
 ```
 
@@ -169,7 +169,7 @@ tags: [git-summary]
 
 **Body layout**, in this order:
 
-1. `# Git summary: Sunday 15 November 2026`
+1. `# Git journal: Sunday 15 November 2026`
 2. `## Worth a look`, one bullet per flagged change: what changed, why it deserves attention, the author, the SHA. If nothing qualifies, the single line "Nothing flagged." `risk_flags` is the number of bullets.
 3. `## Details`, with a `###` heading per repo that had commits. Within a repo the content is grouped by area, as bullet points: one change per bullet. A bullet backed by one commit ends with its SHA; a bullet backed by several commits is followed by an indented sub-bullet listing only the SHAs. Length is proportional to activity. Trivial commits (typos, formatting, small version bumps) are grouped into one closing line per repo, still with their SHAs. Repos with no commits are named in one line at the end.
 4. `## People`, one short entry per author name: the areas they touched and the gist of their work, with SHAs.
@@ -198,18 +198,18 @@ tags: [git-summary]
 
 ## Commands, scheduling and reruns
 
-The tool installs as a single command, `git-summary`, and the scheduled job runs exactly the same command a person would.
+The tool installs as a single command, `gitjournal`, and the scheduled job runs exactly the same command a person would.
 
 | Command | Behaviour |
 | --- | --- |
-| `git-summary run` | Generate every missing day through yesterday. Skips days whose file exists. |
-| `git-summary run --date 2026-11-12` | Target one day. |
-| `git-summary run --from 2026-11-01 --to 2026-11-07` | Target a range, inclusive. |
+| `gitjournal run` | Generate every missing day through yesterday. Skips days whose file exists. |
+| `gitjournal run --date 2026-11-12` | Target one day. |
+| `gitjournal run --from 2026-11-01 --to 2026-11-07` | Target a range, inclusive. |
 | `... --force` | Overwrite existing pages. Only valid together with `--date` or `--from`/`--to`. |
 | `... --dry-run` | Fetch, select commits and print per-day commit counts and estimated tokens. No generation call and no files written; the `api` backend may call the token counting endpoint. |
 | `... --backend api` | Override `model.backend` for this run. |
-| `git-summary schedule install --time 08:00` | Install the daily job. |
-| `git-summary schedule remove` | Remove it. |
+| `gitjournal schedule install --time 08:00` | Install the daily job. |
+| `gitjournal schedule remove` | Remove it. |
 
 **Rerun rule.** An existing page is never overwritten unless `--force` is given with an explicit date or range. `--force` without one is an error, so the whole history cannot be regenerated by accident.
 
@@ -217,7 +217,7 @@ The tool installs as a single command, `git-summary`, and the scheduled job runs
 
 The launchd plist and crontab entry set `PATH` to the directories holding `git` and, for the `claude_code` backend, `claude`, resolved at install time, since scheduled jobs do not inherit the shell's `PATH`.
 
-**Vault push.** With `vault_git_push = true` and the vault a git repository with an upstream, every run that is not `--dry-run` stages changes under the output folder only, commits them as `git-summary: <first day>..<last day>` (or one date), then runs `git pull --rebase --autostash` and `git push`. Other changes in the vault are left alone, and commits pushed by others (such as README edits) are rebased onto. It pushes even when nothing new was written, so an earlier failed push is retried. If the rebase conflicts it is aborted and reported; the tool assumes it is the only writer to the output folder. A push failure is logged, the pages stay written and committed locally, and the exit code is `1`.
+**Vault push.** With `vault_git_push = true` and the vault a git repository with an upstream, every run that is not `--dry-run` stages changes under the output folder only, commits them as `gitjournal: <first day>..<last day>` (or one date), then runs `git pull --rebase --autostash` and `git push`. Other changes in the vault are left alone, and commits pushed by others (such as README edits) are rebased onto. It pushes even when nothing new was written, so an earlier failed push is retried. If the rebase conflicts it is aborted and reported; the tool assumes it is the only writer to the output folder. A push failure is logged, the pages stay written and committed locally, and the exit code is `1`.
 
 **Concurrency.** A lock file prevents a manual run and a scheduled run from overlapping. The second one exits immediately with a logged message and exit code `0`, so the scheduler does not record a failure.
 
@@ -246,7 +246,7 @@ Failures are reported in the log file only. There are no notifications and no er
 Python 3.11 or later, for `tomllib` and `zoneinfo`. Git is driven through `subprocess`, with no git library. The only runtime dependency is the Anthropic SDK. The project is packaged with `pyproject.toml` and installable with `pipx` or `uv tool`.
 
 ```text
-git_summary/
+gitjournal/
   cli.py            argument parsing, run loop, exit codes, lock
   config.py         load and validate TOML
   days.py           IST day boundaries, which days to generate

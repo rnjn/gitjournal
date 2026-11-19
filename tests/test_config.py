@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from git_summary.config import DEFAULT_OMIT_PATCH, ConfigError, load_config
+from gitjournal.config import DEFAULT_OMIT_PATCH, ConfigError, load_config
 
 MINIMAL = """
 vault_path = "{vault}"
@@ -23,8 +23,8 @@ def test_minimal_config_gets_defaults(tmp_path):
     cfg = load_config(write(tmp_path, MINIMAL))
     assert cfg.timezone == "Asia/Kolkata"
     assert cfg.vault_path == tmp_path / "vault"
-    assert cfg.output_folder == "Git Summary"
-    assert cfg.output_dir == tmp_path / "vault" / "Git Summary"
+    assert cfg.output_folder == "Git Journal"
+    assert cfg.output_dir == tmp_path / "vault" / "Git Journal"
     assert cfg.first_run_backfill_days == 30
     assert cfg.vault_git_push is False
     assert cfg.model.backend == "api"
@@ -32,7 +32,7 @@ def test_minimal_config_gets_defaults(tmp_path):
     assert cfg.model.max_input_tokens == 0
     assert cfg.omit_patch == DEFAULT_OMIT_PATCH
     assert cfg.config_dir == tmp_path
-    assert cfg.cache_dir == Path("~/.cache/git-summary/repos").expanduser()
+    assert cfg.cache_dir == Path("~/.cache/gitjournal/repos").expanduser()
     [repo] = cfg.repos
     assert repo.name == "code"
     assert repo.url == "git@github.com:org/code.git"
@@ -133,7 +133,7 @@ def test_invalid_toml(tmp_path):
 
 
 def test_prompt_files_copied_on_first_run_and_not_overwritten(tmp_path):
-    from git_summary.config import ensure_prompt_files, load_system_prompt
+    from gitjournal.config import ensure_prompt_files, load_system_prompt
 
     ensure_prompt_files(tmp_path)
     prompt = tmp_path / "prompt.md"

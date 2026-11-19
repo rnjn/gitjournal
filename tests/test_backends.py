@@ -6,11 +6,11 @@ import anthropic
 import httpx2
 import pytest
 
-from git_summary.backends import BackendError, RetryableError, make_backend, with_retries
-from git_summary.backends.api import ApiBackend, resolve_api_key
-from git_summary.backends.claude_code import ClaudeCodeBackend
-from git_summary.config import ModelConfig
-from git_summary.render import ResponseError
+from gitjournal.backends import BackendError, RetryableError, make_backend, with_retries
+from gitjournal.backends.api import ApiBackend, resolve_api_key
+from gitjournal.backends.claude_code import ClaudeCodeBackend
+from gitjournal.config import ModelConfig
+from gitjournal.render import ResponseError
 
 
 def test_with_retries_succeeds_after_transient_failures():

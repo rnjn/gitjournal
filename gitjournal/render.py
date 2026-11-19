@@ -62,7 +62,7 @@ def merge_parsed(parts: list[Parsed]) -> Parsed:
 
 
 def title(d: date) -> str:
-    return f"# Git summary: {d:%A} {d.day} {d:%B %Y}"
+    return f"# Git journal: {d:%A} {d.day} {d:%B %Y}"
 
 
 def _flow(items: list[str]) -> str:
@@ -81,7 +81,7 @@ def frontmatter(m: PageMeta) -> str:
         f"risk_flags: {m.risk_flags}\n"
         f"model: {m.model}\n"
         f"generated_at: {m.generated_at.isoformat()}\n"
-        "tags: [git-summary]\n"
+        "tags: [gitjournal]\n"
         "---\n"
     )
 
@@ -89,7 +89,7 @@ def frontmatter(m: PageMeta) -> str:
 def _callout(d: date, missing: dict[str, str]) -> str:
     lines = ["> [!warning] Partial page: some repositories could not be read"]
     lines += [f"> - **{name}**: {error}" for name, error in missing.items()]
-    lines.append(f"> Regenerate with: `git-summary run --date {d.isoformat()} --force`")
+    lines.append(f"> Regenerate with: `gitjournal run --date {d.isoformat()} --force`")
     return "\n".join(lines) + "\n\n"
 
 

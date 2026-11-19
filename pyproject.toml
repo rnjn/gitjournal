@@ -1,5 +1,5 @@
 [project]
-name = "git-summary"
+name = "gitjournal"
 version = "0.1.0"
 description = "Daily Markdown summaries of git activity, written into an Obsidian vault"
 readme = "README.md"
@@ -11,14 +11,14 @@ dependencies = [
 ]
 
 [project.scripts]
-git-summary = "git_summary.cli:main"
+gitjournal = "gitjournal.cli:main"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["git_summary"]
+packages = ["gitjournal"]
 
 [tool.ruff]
 line-length = 100

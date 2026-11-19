@@ -1,8 +1,8 @@
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-from git_summary.citations import Cited, link_citations, not_mentioned_line
-from git_summary.repos import Commit
+from gitjournal.citations import Cited, link_citations, not_mentioned_line
+from gitjournal.repos import Commit
 
 IST = ZoneInfo("Asia/Kolkata")
 CODE = "https://github.com/org/code"

@@ -3,13 +3,13 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from pathlib import Path
 
-from git_summary.assemble import CommitData, RepoDay
-from git_summary.backends import Backend, BackendError, with_retries
-from git_summary.budget import BudgetError, input_budget, plan_calls
-from git_summary.citations import Cited, link_citations, not_mentioned_line
-from git_summary.config import Config, load_system_prompt
-from git_summary.days import page_path, recent_pages
-from git_summary.render import (
+from gitjournal.assemble import CommitData, RepoDay
+from gitjournal.backends import Backend, BackendError, with_retries
+from gitjournal.budget import BudgetError, input_budget, plan_calls
+from gitjournal.citations import Cited, link_citations, not_mentioned_line
+from gitjournal.config import Config, load_system_prompt
+from gitjournal.days import page_path, recent_pages
+from gitjournal.render import (
     PageMeta,
     Parsed,
     ResponseError,
@@ -21,7 +21,7 @@ from git_summary.render import (
     render_page,
     write_atomic,
 )
-from git_summary.repos import (
+from gitjournal.repos import (
     RepoError,
     commit_files,
     commits_for_day,
@@ -119,7 +119,7 @@ class Pipeline:
             if actual != recorded:
                 self.log.warning(
                     "%s page records %d commits but main now has %d; "
-                    "regenerate with: git-summary run --date %s --force",
+                    "regenerate with: gitjournal run --date %s --force",
                     d,
                     recorded,
                     actual,

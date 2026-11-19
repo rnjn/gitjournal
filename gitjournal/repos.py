@@ -6,8 +6,8 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from git_summary.config import RepoConfig
-from git_summary.days import day_bounds
+from gitjournal.config import RepoConfig
+from gitjournal.days import day_bounds
 
 FETCH_TIMEOUT = 120
 GIT_TIMEOUT = 60

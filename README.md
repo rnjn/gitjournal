@@ -1,15 +1,15 @@
-# git-summary
+# gitjournal
 
 A daily engineering log, written for you from your git history.
 
-Every morning `git-summary` looks at what landed on the main branch of each repository you care about, reads the actual patches (not just the commit messages), and has Claude write one Markdown page for the day. Pages go into a folder of your choice, typically an Obsidian vault, and can be committed and pushed to a git repository of their own.
+Every morning `gitjournal` looks at what landed on the main branch of each repository you care about, reads the actual patches (not just the commit messages), and has Claude write one Markdown page for the day. Pages go into a folder of your choice, typically an Obsidian vault, and can be committed and pushed to a git repository of their own.
 
 It is built for someone who owns or oversees several repositories and wants to know, in a few minutes each morning, what changed and what deserves a closer look.
 
 ## What a page looks like
 
 ```markdown
-# Git summary: Monday 16 November 2026
+# Git journal: Monday 16 November 2026
 
 ## Worth a look
 
@@ -60,20 +60,20 @@ Every SHA links to the commit on GitHub. Commits the summary did not mention are
 ## Install
 
 ```bash
-git clone <this repo> && cd git-summary
-uv tool install .            # puts `git-summary` on your PATH
+git clone <this repo> && cd gitjournal
+uv tool install .            # puts `gitjournal` on your PATH
 ```
 
-Or run it in place without installing: `uv run --project /path/to/git-summary git-summary ...`.
+Or run it in place without installing: `uv run --project /path/to/gitjournal gitjournal ...`.
 
 ## Configure
 
-Create `~/.config/git-summary/config.toml`:
+Create `~/.config/gitjournal/config.toml`:
 
 ```toml
 timezone = "Asia/Kolkata"               # day boundaries
 vault_path = "/path/to/vault"           # must exist
-output_folder = "Git Summary"           # pages go in vault_path/output_folder
+output_folder = "Git Journal"           # pages go in vault_path/output_folder
 first_run_backfill_days = 30
 vault_git_push = false                  # commit and push the output folder after each run
 
@@ -97,7 +97,7 @@ web_url = "https://github.com/acme/infra"   # optional; default is derived from 
 omit_patch = ["**/package-lock.json", "**/dist/**", "**/*.generated.*"]
 ```
 
-Other optional keys: `cache_dir` (default `~/.cache/git-summary/repos`) and `log_file` (default `~/.local/state/git-summary/git-summary.log`).
+Other optional keys: `cache_dir` (default `~/.cache/gitjournal/repos`) and `log_file` (default `~/.local/state/gitjournal/gitjournal.log`).
 
 On first run, `prompt.md` and `risk_checklist.md` are copied next to the config. Edit them to change the writing style or what gets flagged; your edits are never overwritten.
 
@@ -106,7 +106,7 @@ On first run, `prompt.md` and `risk_checklist.md` are copied next to the config.
 The `api` backend reads `ANTHROPIC_API_KEY`. Scheduled jobs do not see your shell environment, so on macOS it falls back to the login Keychain:
 
 ```bash
-security add-generic-password -s git-summary -a anthropic -w
+security add-generic-password -s gitjournal -a anthropic -w
 ```
 
 ### Pushing the output folder
@@ -116,18 +116,18 @@ Set `vault_git_push = true` when the vault is a git repository with an upstream.
 ## Use
 
 ```bash
-git-summary run                                   # every missing day up to yesterday
-git-summary run --date 2026-11-12 --force         # regenerate one day
-git-summary run --from 2026-11-01 --to 2026-11-07 # fill missing days in a range
-git-summary run --dry-run                         # commit counts and token estimates, no model calls
-git-summary run --save-prompts /tmp/prompts       # keep the exact prompts and responses
-git-summary schedule install --time 08:00         # daily job (launchd on macOS, cron on Linux)
-git-summary schedule remove
+gitjournal run                                   # every missing day up to yesterday
+gitjournal run --date 2026-11-12 --force         # regenerate one day
+gitjournal run --from 2026-11-01 --to 2026-11-07 # fill missing days in a range
+gitjournal run --dry-run                         # commit counts and token estimates, no model calls
+gitjournal run --save-prompts /tmp/prompts       # keep the exact prompts and responses
+gitjournal schedule install --time 08:00         # daily job (launchd on macOS, cron on Linux)
+gitjournal schedule remove
 ```
 
 Existing pages are never overwritten without `--force`, and `--force` requires an explicit date or range.
 
-Exit codes: `0` everything written, `1` a day failed, was partial, or the push failed, `2` config or usage error. Logs go to `~/.local/state/git-summary/git-summary.log`.
+Exit codes: `0` everything written, `1` a day failed, was partial, or the push failed, `2` config or usage error. Logs go to `~/.local/state/gitjournal/gitjournal.log`.
 
 ## Privacy
 
@@ -142,7 +142,7 @@ make test     # pytest
 make lint     # ruff check + format check
 ```
 
-The design is described in [docs/spec](docs/spec/Daily%20Git%20Summary%20build%20spec.md).
+The design is described in [docs/spec](docs/spec/gitjournal%20spec.md).
 
 ## Licence
 

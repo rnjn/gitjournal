@@ -5,11 +5,11 @@ from collections.abc import Callable, Mapping
 
 import anthropic
 
-from git_summary.backends import BackendError, RetryableError
-from git_summary.budget import OUTPUT_RESERVE
+from gitjournal.backends import BackendError, RetryableError
+from gitjournal.budget import OUTPUT_RESERVE
 
 FALLBACK_BETA = "server-side-fallback-2026-07-01"
-KEYCHAIN_SERVICE = "git-summary"
+KEYCHAIN_SERVICE = "gitjournal"
 KEYCHAIN_ACCOUNT = "anthropic"
 REQUEST_TIMEOUT = 900.0
 

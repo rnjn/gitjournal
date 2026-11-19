@@ -3,7 +3,7 @@ from zoneinfo import ZoneInfo
 
 import pytest
 
-from git_summary.assemble import (
+from gitjournal.assemble import (
     CommitData,
     RepoDay,
     area_of,
@@ -12,8 +12,8 @@ from git_summary.assemble import (
     is_omitted,
     render_commit,
 )
-from git_summary.config import DEFAULT_OMIT_PATCH
-from git_summary.repos import Commit, FileChange
+from gitjournal.config import DEFAULT_OMIT_PATCH
+from gitjournal.repos import Commit, FileChange
 
 IST = ZoneInfo("Asia/Kolkata")
 

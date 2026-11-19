@@ -1,7 +1,7 @@
 import contextlib
 from pathlib import Path
 
-from git_summary.repos import FETCH_TIMEOUT, RepoError, run_git
+from gitjournal.repos import FETCH_TIMEOUT, RepoError, run_git
 
 
 class VaultError(Exception):
@@ -11,7 +11,7 @@ class VaultError(Exception):
 def _message(names: list[str]) -> str:
     days = sorted(Path(n).stem for n in names)
     span = days[0] if days[0] == days[-1] else f"{days[0]}..{days[-1]}"
-    return f"git-summary: {span}"
+    return f"gitjournal: {span}"
 
 
 def publish(vault: Path, folder: str) -> str | None:

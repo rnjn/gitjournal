@@ -3,7 +3,7 @@ from zoneinfo import ZoneInfo
 
 import pytest
 
-from git_summary.render import (
+from gitjournal.render import (
     PageMeta,
     Parsed,
     ResponseError,
@@ -84,8 +84,8 @@ def test_merge_parsed_all_nothing_flagged():
 
 
 def test_title():
-    assert title(date(2026, 11, 15)) == "# Git summary: Sunday 15 November 2026"
-    assert title(date(2026, 11, 2)) == "# Git summary: Monday 2 November 2026"
+    assert title(date(2026, 11, 15)) == "# Git journal: Sunday 15 November 2026"
+    assert title(date(2026, 11, 2)) == "# Git journal: Monday 2 November 2026"
 
 
 def test_render_page_ok():
@@ -107,9 +107,9 @@ def test_render_page_ok():
         "risk_flags: 2\n"
         "model: claude-sonnet-5-5\n"
         "generated_at: 2026-11-16T08:00:12+05:30\n"
-        "tags: [git-summary]\n"
+        "tags: [gitjournal]\n"
         "---\n\n"
-        "# Git summary: Sunday 15 November 2026\n"
+        "# Git journal: Sunday 15 November 2026\n"
     )
     assert page.index("## Worth a look") < page.index("## Details") < page.index("## People")
     assert page.rstrip().endswith("Not mentioned above: x")
@@ -128,7 +128,7 @@ def test_render_page_partial_callout_and_reduced_note():
     callout = page[page.index("> [!warning]") : page.index("## Worth a look")]
     assert "infra" in callout
     assert "git fetch timed out after 120s" in callout
-    assert "git-summary run --date 2026-11-15 --force" in callout
+    assert "gitjournal run --date 2026-11-15 --force" in callout
     assert "src/big.py (a1b2c3d)" in page
     assert page.index("[!warning]") < page.index("## Worth a look")
 
@@ -142,7 +142,7 @@ def test_render_empty_page():
 
 
 def test_write_atomic_and_read_commit_count(tmp_path):
-    target = tmp_path / "vault" / "Git Summary" / "2026-11-15.md"
+    target = tmp_path / "vault" / "Git Journal" / "2026-11-15.md"
     write_atomic(target, render_empty_page(meta(commits=7), {}))
     assert target.exists()
     assert list(target.parent.iterdir()) == [target]

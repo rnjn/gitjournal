@@ -3,8 +3,8 @@ from zoneinfo import ZoneInfo
 
 import pytest
 
-from git_summary.config import RepoConfig
-from git_summary.repos import (
+from gitjournal.config import RepoConfig
+from gitjournal.repos import (
     RepoError,
     commit_files,
     commits_for_day,

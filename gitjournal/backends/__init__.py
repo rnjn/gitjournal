@@ -2,8 +2,8 @@ import time
 from collections.abc import Callable
 from typing import Protocol, TypeVar
 
-from git_summary.config import ModelConfig
-from git_summary.render import ResponseError
+from gitjournal.config import ModelConfig
+from gitjournal.render import ResponseError
 
 T = TypeVar("T")
 ATTEMPTS = 3
@@ -48,11 +48,11 @@ def with_retries(
 def make_backend(model: ModelConfig, override: str | None, **kwargs) -> Backend:
     name = override or model.backend
     if name == "api":
-        from git_summary.backends.api import ApiBackend
+        from gitjournal.backends.api import ApiBackend
 
         return ApiBackend(model.name, **kwargs)
     if name == "claude_code":
-        from git_summary.backends.claude_code import ClaudeCodeBackend
+        from gitjournal.backends.claude_code import ClaudeCodeBackend
 
         return ClaudeCodeBackend(model.name, **kwargs)
     raise BackendError(f"unknown backend: {name}")

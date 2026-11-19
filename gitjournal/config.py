@@ -4,7 +4,7 @@ from importlib.resources import files
 from pathlib import Path
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-DEFAULT_CONFIG_PATH = Path("~/.config/git-summary/config.toml").expanduser()
+DEFAULT_CONFIG_PATH = Path("~/.config/gitjournal/config.toml").expanduser()
 BACKENDS = ("api", "claude_code")
 PROMPT_FILES = ("prompt.md", "risk_checklist.md")
 
@@ -56,9 +56,9 @@ class Config:
     repos: list[RepoConfig]
     config_dir: Path
     timezone: str = "Asia/Kolkata"
-    output_folder: str = "Git Summary"
-    cache_dir: Path = Path("~/.cache/git-summary/repos").expanduser()
-    log_file: Path = Path("~/.local/state/git-summary/git-summary.log").expanduser()
+    output_folder: str = "Git Journal"
+    cache_dir: Path = Path("~/.cache/gitjournal/repos").expanduser()
+    log_file: Path = Path("~/.local/state/gitjournal/gitjournal.log").expanduser()
     first_run_backfill_days: int = 30
     vault_git_push: bool = False
     model: ModelConfig = field(default_factory=ModelConfig)
@@ -154,7 +154,7 @@ def load_config(path: Path) -> Config:
 
 def ensure_prompt_files(config_dir: Path) -> None:
     config_dir.mkdir(parents=True, exist_ok=True)
-    defaults = files("git_summary") / "defaults"
+    defaults = files("gitjournal") / "defaults"
     for name in PROMPT_FILES:
         target = config_dir / name
         if not target.exists():

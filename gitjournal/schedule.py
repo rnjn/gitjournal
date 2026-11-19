@@ -7,8 +7,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-LABEL = "local.git-summary"
-CRON_MARKER = "# git-summary"
+LABEL = "local.gitjournal"
+CRON_MARKER = "# gitjournal"
 BASE_PATH = ["/usr/local/bin", "/opt/homebrew/bin", "/usr/bin", "/bin", "/usr/sbin", "/sbin"]
 TIME_RE = re.compile(r"^([01]?\d|2[0-3]):([0-5]\d)$")
 
@@ -25,8 +25,8 @@ def _parse_time(value: str) -> tuple[int, int]:
 
 
 def _command(config_path: Path, which) -> list[str]:
-    exe = which("git-summary")
-    prefix = [exe] if exe else [sys.executable, "-m", "git_summary.cli"]
+    exe = which("gitjournal")
+    prefix = [exe] if exe else [sys.executable, "-m", "gitjournal.cli"]
     return [*prefix, "--config", str(Path(config_path).expanduser().resolve()), "run"]
 
 
@@ -70,7 +70,7 @@ def install(
         uid = os.getuid() if uid is None else uid
         plist_path = _plist_path(home)
         plist_path.parent.mkdir(parents=True, exist_ok=True)
-        log_dir = home / ".local" / "state" / "git-summary"
+        log_dir = home / ".local" / "state" / "gitjournal"
         log_dir.mkdir(parents=True, exist_ok=True)
         plist = {
             "Label": LABEL,

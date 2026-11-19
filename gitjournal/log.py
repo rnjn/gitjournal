@@ -9,7 +9,7 @@ BACKUPS = 3
 
 def setup_logging(log_file: Path) -> logging.Logger:
     log_file.parent.mkdir(parents=True, exist_ok=True)
-    logger = logging.getLogger("git_summary")
+    logger = logging.getLogger("gitjournal")
     logger.setLevel(logging.INFO)
     for h in list(logger.handlers):
         logger.removeHandler(h)

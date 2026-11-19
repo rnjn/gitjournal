@@ -1,7 +1,7 @@
 import re
 from dataclasses import dataclass
 
-from git_summary.repos import Commit
+from gitjournal.repos import Commit
 
 SHA = r"[0-9a-f]{7,40}"
 MARKER_RE = re.compile(rf"\[({SHA}(?:\s*,\s*{SHA})*)\](?!\()")

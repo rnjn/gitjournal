@@ -1,7 +1,7 @@
 import re
 
-from git_summary.backends import RetryableError
-from git_summary.budget import char_estimate
+from gitjournal.backends import RetryableError
+from gitjournal.budget import char_estimate
 
 COMMIT_RE = re.compile(r'<commit sha="([0-9a-f]+)" author="([^"]*)"')
 REPO_RE = re.compile(r'<repo name="([^"]+)"')

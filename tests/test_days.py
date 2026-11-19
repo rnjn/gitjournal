@@ -1,7 +1,7 @@
 from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
-from git_summary.days import day_bounds, existing_pages, in_day, recent_pages, target_days
+from gitjournal.days import day_bounds, existing_pages, in_day, recent_pages, target_days
 
 IST = ZoneInfo("Asia/Kolkata")
 NOW = datetime(2026, 11, 16, 8, 0, tzinfo=IST)

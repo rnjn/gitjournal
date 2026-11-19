@@ -5,12 +5,12 @@ import sys
 from datetime import date, datetime
 from pathlib import Path
 
-from git_summary.backends import make_backend
-from git_summary.config import DEFAULT_CONFIG_PATH, ConfigError, ensure_prompt_files, load_config
-from git_summary.days import target_days
-from git_summary.log import setup_logging
-from git_summary.pipeline import Pipeline
-from git_summary.vault import VaultError, publish
+from gitjournal.backends import make_backend
+from gitjournal.config import DEFAULT_CONFIG_PATH, ConfigError, ensure_prompt_files, load_config
+from gitjournal.days import target_days
+from gitjournal.log import setup_logging
+from gitjournal.pipeline import Pipeline
+from gitjournal.vault import VaultError, publish
 
 EXIT_OK, EXIT_FAILED, EXIT_USAGE = 0, 1, 2
 COMPLETE = {"ok", "empty", "dry-run"}
@@ -24,7 +24,7 @@ def build_parser() -> argparse.ArgumentParser:
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument("--config", type=Path, default=argparse.SUPPRESS)
 
-    parser = argparse.ArgumentParser(prog="git-summary", parents=[common])
+    parser = argparse.ArgumentParser(prog="gitjournal", parents=[common])
     sub = parser.add_subparsers(dest="command", required=True)
 
     run = sub.add_parser("run", parents=[common], help="generate missing daily pages")
@@ -76,7 +76,7 @@ def run(args, cfg, now, backend_factory) -> int:
         return EXIT_USAGE
     ensure_prompt_files(cfg.config_dir)
 
-    lock_path = cfg.log_file.parent / "git-summary.lock"
+    lock_path = cfg.log_file.parent / "gitjournal.lock"
     with open(lock_path, "w") as lock:
         try:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -152,13 +152,13 @@ def main(argv: list[str] | None = None, now: datetime | None = None, backend_fac
     try:
         cfg = load_config(config_path)
     except ConfigError as e:
-        print(f"git-summary: {e}", file=sys.stderr)
+        print(f"gitjournal: {e}", file=sys.stderr)
         return EXIT_USAGE
 
     if args.command == "run":
         return run(args, cfg, now, backend_factory or make_backend)
 
-    from git_summary import schedule
+    from gitjournal import schedule
 
     try:
         if args.action == "install":
@@ -166,7 +166,7 @@ def main(argv: list[str] | None = None, now: datetime | None = None, backend_fac
         else:
             print(schedule.remove())
     except schedule.ScheduleError as e:
-        print(f"git-summary: {e}", file=sys.stderr)
+        print(f"gitjournal: {e}", file=sys.stderr)
         return EXIT_USAGE
     return EXIT_OK
 

@@ -2,8 +2,8 @@ import json
 import subprocess
 import tempfile
 
-from git_summary.backends import BackendError, RetryableError
-from git_summary.budget import char_estimate
+from gitjournal.backends import BackendError, RetryableError
+from gitjournal.budget import char_estimate
 
 CALL_TIMEOUT = 900
 DOCUMENTED_CONTEXT_LIMIT = 1_000_000

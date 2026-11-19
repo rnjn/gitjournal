@@ -4,7 +4,7 @@ from zoneinfo import ZoneInfo
 
 import pytest
 
-from git_summary import cli
+from gitjournal import cli
 from tests.fakes import FakeBackend
 from tests.gitutil import Repo, git, vault_with_remote
 
@@ -17,8 +17,8 @@ class Env:
         self.tmp = tmp_path
         self.vault = tmp_path / "vault"
         self.vault.mkdir()
-        self.out = self.vault / "Git Summary"
-        self.log = tmp_path / "state" / "git-summary.log"
+        self.out = self.vault / "Git Journal"
+        self.log = tmp_path / "state" / "gitjournal.log"
         self.code = Repo(tmp_path / "remotes" / "code")
         self.docs = Repo(tmp_path / "remotes" / "docs")
         self.code.commit("2026-10-01T10:00:00+05:30", "initial", {"src/app.py": "a\n"})
@@ -158,7 +158,7 @@ def test_unreachable_repo_gives_partial_page(env):
     assert "repos: [code, docs]" in page
     assert "repos_missing: [sdk]" in page
     assert "**sdk**" in page
-    assert "git-summary run --date 2026-11-15 --force" in page
+    assert "gitjournal run --date 2026-11-15 --force" in page
     assert "sdk" in env.log_text()
 
 
@@ -169,7 +169,7 @@ def test_every_repo_failing_writes_nothing(env):
 
 
 def test_model_failure_writes_nothing_and_continues(env, monkeypatch):
-    monkeypatch.setattr("git_summary.backends.BASE_DELAY", 0)
+    monkeypatch.setattr("gitjournal.backends.BASE_DELAY", 0)
     env.code.commit("2026-11-14T09:00:00+05:30", "x", {"src/app.py": "b\n"})
     env.backend.fail = True
     assert env.run("run", "--from", "2026-11-13", "--to", "2026-11-15") == 1
@@ -233,7 +233,7 @@ def test_late_commit_warning(env):
     env.run("run")
     log = env.log_text()
     assert "2026-11-14" in log
-    assert "git-summary run --date 2026-11-14 --force" in log
+    assert "gitjournal run --date 2026-11-14 --force" in log
 
 
 def test_missing_vault_exits_2_before_any_call(env):
@@ -249,7 +249,7 @@ def test_bad_config_exits_2(env, tmp_path):
 
 def test_concurrent_run_exits_quietly(env):
     env.log.parent.mkdir(parents=True, exist_ok=True)
-    with open(env.log.parent / "git-summary.lock", "w") as held:
+    with open(env.log.parent / "gitjournal.lock", "w") as held:
         fcntl.flock(held, fcntl.LOCK_EX | fcntl.LOCK_NB)
         assert env.run("run") == 0
     assert not env.out.exists()
@@ -285,10 +285,10 @@ def pushed_vault(env):
 def test_run_commits_and_pushes_vault(env):
     remote = pushed_vault(env)
     assert env.run("run", "--date", "2026-11-15") == 0
-    assert git(remote, "log", "-1", "--format=%s", "main") == "git-summary: 2026-11-15"
+    assert git(remote, "log", "-1", "--format=%s", "main") == "gitjournal: 2026-11-15"
     files = git(remote, "ls-tree", "-r", "--name-only", "main").splitlines()
-    assert "Git Summary/2026-11-15.md" in files
-    assert "pushed vault: git-summary: 2026-11-15" in env.log_text()
+    assert "Git Journal/2026-11-15.md" in files
+    assert "pushed vault: gitjournal: 2026-11-15" in env.log_text()
 
 
 def test_dry_run_does_not_push(env):
