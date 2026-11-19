@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/logo.svg" alt="gitjournal logo" width="112"></p>
+
 # gitjournal
 
 [![Open Source](https://img.shields.io/badge/Open%20Source-%E2%9C%93-brightgreen.svg)](https://opensource.org/osd)
