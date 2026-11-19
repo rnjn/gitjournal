@@ -2,6 +2,9 @@
 name = "git-summary"
 version = "0.1.0"
 description = "Daily Markdown summaries of git activity, written into an Obsidian vault"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.11"
 dependencies = [
     "anthropic>=2.9.0",
