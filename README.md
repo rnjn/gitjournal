@@ -1,5 +1,9 @@
 # gitjournal
 
+[![Open Source](https://img.shields.io/badge/Open%20Source-%E2%9C%93-brightgreen.svg)](https://opensource.org/osd)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](pyproject.toml)
+
 A daily engineering log, written for you from your git history.
 
 Every morning `gitjournal` looks at what landed on the main branch of each repository you care about, reads the actual patches (not just the commit messages), and has Claude write one Markdown page for the day. Pages go into a folder of your choice, typically an Obsidian vault, and can be committed and pushed to a git repository of their own.
